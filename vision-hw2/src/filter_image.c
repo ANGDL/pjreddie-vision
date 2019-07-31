@@ -71,7 +71,7 @@ image convolve_image(image im, image filter, int preserve)
 		}
 	}
 
-	if(preserve != 0 || n_filters == 1)
+	if(preserve != 0)
 		return new_image;
 
 	image avg_img = make_image(new_image.w, new_image.h, 1);
@@ -84,6 +84,9 @@ image convolve_image(image im, image filter, int preserve)
 			set_pixel(avg_img, i, j, 0, v);
 		}
 	}
+
+	free_image(new_image);
+
 	return avg_img;
 }
 
@@ -302,6 +305,11 @@ image *sobel_image(image im)
 		}
 	}
 	
+	free_image(gx_filter);
+	free_image(gy_filter);
+	free_image(gx);
+	free_image(gy);
+
     return img;
 }
 

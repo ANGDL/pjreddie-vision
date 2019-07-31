@@ -15,45 +15,54 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\args.c">
+    <ClCompile Include="..\..\vision-hw2\src\args.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\harris_image.c">
+    <ClCompile Include="..\..\vision-hw2\src\harris_image.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\load_image.c">
+    <ClCompile Include="..\..\vision-hw2\src\load_image.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\main.c">
+    <ClCompile Include="..\..\vision-hw2\src\main.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\matrix.c">
+    <ClCompile Include="..\..\vision-hw2\src\matrix.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\panorama_image.c">
+    <ClCompile Include="..\..\vision-hw2\src\panorama_image.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\test.c">
+    <ClCompile Include="..\..\vision-hw2\src\test.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vision-hw2\src\filter_image.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vision-hw2\src\process_image.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vision-hw2\src\resize_image.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\args.h">
+    <ClInclude Include="..\..\vision-hw2\src\args.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\image.h">
+    <ClInclude Include="..\..\vision-hw2\src\image.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\matrix.h">
+    <ClInclude Include="..\..\vision-hw2\src\matrix.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\stb_image.h">
+    <ClInclude Include="..\..\vision-hw2\src\stb_image.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\stb_image_write.h">
+    <ClInclude Include="..\..\vision-hw2\src\stb_image_write.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\test.h">
+    <ClInclude Include="..\..\vision-hw2\src\test.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

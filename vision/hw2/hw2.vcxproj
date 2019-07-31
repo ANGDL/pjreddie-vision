@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{BA0929FE-FED3-4187-BC57-DCAF7A4C3ABE}</ProjectGuid>
-    <RootNamespace>visionhw2</RootNamespace>
+    <ProjectGuid>{44529EED-3E9D-45CA-99D6-D09A7A38D0EF}</ProjectGuid>
+    <RootNamespace>hw2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
@@ -82,7 +82,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
@@ -124,21 +124,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\args.c" />
-    <ClCompile Include="..\src\harris_image.c" />
-    <ClCompile Include="..\src\load_image.c" />
-    <ClCompile Include="..\src\main.c" />
-    <ClCompile Include="..\src\matrix.c" />
-    <ClCompile Include="..\src\panorama_image.c" />
-    <ClCompile Include="..\src\test.c" />
+    <ClCompile Include="..\..\vision-hw2\src\args.c" />
+    <ClCompile Include="..\..\vision-hw2\src\filter_image.c" />
+    <ClCompile Include="..\..\vision-hw2\src\harris_image.c" />
+    <ClCompile Include="..\..\vision-hw2\src\load_image.c" />
+    <ClCompile Include="..\..\vision-hw2\src\main.c" />
+    <ClCompile Include="..\..\vision-hw2\src\matrix.c" />
+    <ClCompile Include="..\..\vision-hw2\src\panorama_image.c" />
+    <ClCompile Include="..\..\vision-hw2\src\process_image.c" />
+    <ClCompile Include="..\..\vision-hw2\src\resize_image.c" />
+    <ClCompile Include="..\..\vision-hw2\src\test.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\args.h" />
-    <ClInclude Include="..\src\image.h" />
-    <ClInclude Include="..\src\matrix.h" />
-    <ClInclude Include="..\src\stb_image.h" />
-    <ClInclude Include="..\src\stb_image_write.h" />
-    <ClInclude Include="..\src\test.h" />
+    <ClInclude Include="..\..\vision-hw2\src\args.h" />
+    <ClInclude Include="..\..\vision-hw2\src\image.h" />
+    <ClInclude Include="..\..\vision-hw2\src\matrix.h" />
+    <ClInclude Include="..\..\vision-hw2\src\stb_image.h" />
+    <ClInclude Include="..\..\vision-hw2\src\stb_image_write.h" />
+    <ClInclude Include="..\..\vision-hw2\src\test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
