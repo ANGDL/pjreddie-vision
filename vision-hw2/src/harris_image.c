@@ -121,7 +121,7 @@ image make_1d_gaussian(float sigma)
 // returns: smoothed image.
 image smooth_image(image im, float sigma)
 {
-    if(0){
+    if(1){
         image g = make_gaussian_filter(sigma);
         image s = convolve_image(im, g, 1);
         free_image(g);
@@ -235,11 +235,13 @@ image nms_image(image im, int w)
 	for (int j = 0; j != r.h; ++j) {
 		for (int i = 0; i != r.w; ++i) {
 			float v = get_pixel(r, i, j, 0);
-			for (int k = 0; k != w; ++k) {
-				float nv = get_pixel(r, i + k, j, 0);
-				if (nv > v) {
-					set_pixel(r, i, j, 0 , -99999.);
-					break;
+			for (int m = 0; m != w; ++m) {
+				for (int n = 0; n != w; ++n) {
+					float nv = get_pixel(r, i + m - 2 / w, j + n - 2 / w, 0);
+					if (nv > v) {
+						set_pixel(r, i, j, 0, -99999.);
+						break;
+					}
 				}
 			}
 		}
