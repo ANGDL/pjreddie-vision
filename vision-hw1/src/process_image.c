@@ -17,7 +17,7 @@ float get_pixel(image im, int x, int y, int c)
 
 	// get the index
 	int idx = x + im.w * y + im.w * im.h * c;
-
+	assert(idx < im.w * im.h * im.c);
     return im.data[idx];
 }
 
@@ -26,6 +26,7 @@ void set_pixel(image im, int x, int y, int c, float v)
     // Done Fill this in
 	// get the index
 	int idx = x + im.w * y + im.w * im.h * c;
+	assert(idx < im.w * im.h * im.c);
 	im.data[idx] = v;
 }
 
@@ -59,29 +60,6 @@ void shift_image(image im, int c, float v)
 			float new_v = get_pixel(im, i, j, c) + v;
 			set_pixel(im, i, j, c, new_v);
 		}
-	}
-}
-
-//min-max normalization
-void rescaling_image(image im)
-{
-    // Done
-	float max_v = -1.0;
-	float min_v = 256.0;
-	for (int k = 0; k != im.c; ++k) {
-		for (int j = 0; j != im.h; ++j) {
-			for (int i = 0; i != im.w; ++i) {
-				float v = get_pixel(im, i, j, k);
-				if (v > max_v)
-					max_v = v;
-				else if (v < min_v)
-					min_v = v;
-			}
-		}
-	}
-
-	for (int i = 0; i != im.w * im.h * im.c; ++i) {
-		im.data[i] = (min_v == max_v) ? min_v : (im.data[i] - min_v) / (max_v - min_v);
 	}
 }
 
