@@ -117,8 +117,13 @@ image find_and_draw_matches(image a, image b, float sigma, float thresh, int nms
 // returns: l1 distance between arrays (sum of absolute differences).
 float l1_distance(float *a, float *b, int n)
 {
-    // TODO: return the correct number.
-    return 0;
+    // Done: return the correct number.
+	float s = 0.0;
+	for (int i = 0; i != n; ++i) {
+		float v = a[i] - b[i];
+		s += (v > 0) ? v : -v;
+	}
+    return s;
 }
 
 // Finds best matches between descriptors of two images.
@@ -133,16 +138,25 @@ match *match_descriptors(descriptor *a, int an, descriptor *b, int bn, int *mn)
 
     // We will have at most an matches.
     *mn = an;
-    match *m = calloc(an, sizeof(match));
+    match *m = (match*)calloc(an, sizeof(match));
     for(j = 0; j < an; ++j){
         // TODO: for every descriptor in a, find best match in b.
         // record ai as the index in *a and bi as the index in *b.
         int bind = 0; // <- find the best match
+		float distance = 99999.;
+		for (i = 0; i < bn; ++i) {
+			assert(a[j].n == b[i].n);
+			float d = l1_distance(a[j].data, b[i].data, a[j].n);
+			if (d < distance) {
+				distance = d;
+				bind = i;
+			}
+		}
         m[j].ai = j;
         m[j].bi = bind; // <- should be index in b.
         m[j].p = a[j].p;
         m[j].q = b[bind].p;
-        m[j].distance = 0; // <- should be the smallest L1 distance!
+        m[j].distance = distance; // <- should be the smallest L1 distance!
     }
 
     int count = 0;
@@ -153,7 +167,33 @@ match *match_descriptors(descriptor *a, int an, descriptor *b, int bn, int *mn)
     // Each point should only be a part of one match.
     // Some points will not be in a match.
     // In practice just bring good matches to front of list, set *mn.
-    *mn = count;
+
+	qsort(m, an, sizeof(match), match_compare);
+
+	for (int t = 0; t < an; ++t) {
+		printf("%d,", m[t].bi);
+	}
+
+	i = 0, j = i + 1;
+	++seen[m[i].bi];
+
+	while (j < an)
+	{
+		if (seen[m[j].bi] == 0) {
+			if (i + 1 != j) {
+				m[i + 1] = m[j];
+			}
+			++seen[m[j].bi];
+			++i;
+			++j;
+			++count;	
+		}
+		else if(seen[m[j].bi] > 0){
+			++j;
+		}
+	}
+
+    *mn = count + 1;
     free(seen);
     return m;
 }
