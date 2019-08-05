@@ -146,10 +146,6 @@ image structure_matrix(image im, float sigma)
     image S = make_image(im.w, im.h, 3);
     // TODO: calculate structure matrix for im.
 	// 1. calculating derivatives
-	if (3 == im.c)
-		im = rgb_to_grayscale(im);
-
-	int img_size = im.w * im.h;
 
 	image gx_filter = make_gx_filter();
 	image gy_filter = make_gy_filter();
@@ -157,41 +153,35 @@ image structure_matrix(image im, float sigma)
 	image gx_img = convolve_image(im, gx_filter, 0);
 	image gy_img = convolve_image(im, gy_filter, 0);
 
-	image ix_img = make_image(im.w, im.h, 1);
-	image iy_img = make_image(im.w, im.h, 1);
-	image ixy_img = make_image(im.w, im.h, 1);
+	for (int j = 0; j != S.h; ++j) {
+		for (int i = 0; i != S.w; ++i) {
+			for (int k = 0; k != S.c; ++k) {
 
-	for (int j = 0; j != im.h; ++j) {
-		for (int i = 0; i != im.w; ++i) {
-			float ix = get_pixel(gx_img, i, j, 0) /** get_pixel(im, i, j, 0)*/;
-			float iy = get_pixel(gy_img, i, j, 0) /** get_pixel(im, i, j, 0)*/;
-			float ixy = ix * iy;
-			set_pixel(ix_img, i, j, 0, ix * ix);
-			set_pixel(iy_img, i, j, 0, iy * iy);
-			set_pixel(ixy_img, i, j, 0, ixy);
+				float ix = get_pixel(gx_img, i, j, 0) ;
+				float iy = get_pixel(gy_img, i, j, 0);
+				float ixy = ix * iy;
+
+				if (0 == k) {
+					set_pixel(S, i, j, k, ix * ix);
+				}
+				else if (1 == k) {
+					set_pixel(S, i, j, k, iy * iy);
+				}
+				else {
+					set_pixel(S, i, j, k, ixy);
+				}
+			}
 		}
 	}
 
 	//2. corresponding measures
-	image sx_img = smooth_image(ix_img, sigma);
-	image sy_img = smooth_image(iy_img, sigma);
-	image sxy_img = smooth_image(ixy_img, sigma);
-
-	float* p = S.data;
-	memmove(p, sx_img.data, img_size * sizeof(float));
-	p += img_size;
-	memmove(p, sy_img.data, img_size * sizeof(float));
-	p += img_size;
-	memmove(p, sxy_img.data, img_size * sizeof(float));
+	S = smooth_image(S, sigma);
 
 	free_image(gx_filter);
 	free_image(gy_filter);
 	free_image(gx_img);
-	free_image(gy_img);
-	free_image(ix_img);
-	free_image(iy_img);
-	free_image(ixy_img);
-	
+	free_image(gy_img);	
+
     return S;
 }
 
@@ -209,7 +199,7 @@ image cornerness_response(image S)
 			float sy = get_pixel(S, i, j, 1);
 			float sxy = get_pixel(S, i, j, 2);
 
-			float det = sx * sy - sxy * sxy;
+			float det = (sx * sy) - (sxy * sxy);
 			float trace = sx + sy;
 
 			float h = det - 0.06 * trace * trace;
@@ -235,12 +225,13 @@ image nms_image(image im, int w)
 	for (int j = 0; j != r.h; ++j) {
 		for (int i = 0; i != r.w; ++i) {
 			float v = get_pixel(r, i, j, 0);
-			for (int m = 0; m != w; ++m) {
-				for (int n = 0; n != w; ++n) {
-					float nv = get_pixel(r, i + m - 2 / w, j + n - 2 / w, 0);
+			for (int m = 0; m < 2*w+1; ++m) {
+				for (int n = 0; n < 2*w+1; ++n) {
+					float nv = get_pixel(r, i + m - w, j + n - w, 0);
 					if (nv > v) {
 						set_pixel(r, i, j, 0, -99999.);
-						break;
+						n = 2 * w + 1;
+						m = 2 * w + 1;
 					}
 				}
 			}
@@ -269,7 +260,7 @@ descriptor *harris_corner_detector(image im, float sigma, float thresh, int nms,
     image Rnms = nms_image(R, nms);
 
 
-    //TODO: count number of responses over threshold
+    //Done: count number of responses over threshold
     int count = 0; // change this
 	for (int i = 0; i != Rnms.w * Rnms.h * Rnms.c; ++i) {
 		float v = Rnms.data[i];
@@ -285,7 +276,8 @@ descriptor *harris_corner_detector(image im, float sigma, float thresh, int nms,
 	for (int i = 0; i != Rnms.w * Rnms.h * Rnms.c; ++i) {
 		float v = Rnms.data[i];
 		if (v > thresh) {
-			d[count++] = describe_index(im, i);
+			d[count] = describe_index(im, i);
+			++count;
 		}
 	}
 
