@@ -261,17 +261,16 @@ int model_inliers(matrix H, match *m, int n, float thresh)
 		point p = project_point(H, m[i].p);
 		point q = m[i].q;
 		float d = point_distance(p, q);
-		if (d < thresh) {
-			if (i + 1 != j) {
-				m[i + 1] = m[j];
-			}
+		if (d >= thresh) {
+			match t = m[j];		
+			m[j] = m[i];
+			m[i] = t;
+			++j;
+		}
+		else {
 			++i;
 			++j;
 			++count;
-		}
-		else {
-			m[i] = m[j];
-			++j;
 		}
 	}
     return count;
@@ -283,7 +282,6 @@ int model_inliers(matrix H, match *m, int n, float thresh)
 void randomize_matches(match *m, int n)
 {
     // DONE: implement Fisher-Yates to shuffle the array.
-	srand((unsigned int)time(0));
 
 	for (int i = n - 1; i > 0; i--) {
 		int j = rand() % (i + 1);
@@ -385,8 +383,11 @@ matrix RANSAC(match *m, int n, float thresh, int k, int cutoff)
 		matrix h = compute_homography(m, 5);
 		int inliers = model_inliers(h, m, n, thresh);
 		if (inliers > best) {
-			free_matrix(Hb);
-			Hb = compute_homography(m, inliers);
+			for (int a = 0; a < 3; a++) {
+				for (int b = 0; b < 3; b++) {
+					Hb.data[a][b] = h.data[a][b];
+				}
+			}
 			best = inliers;
 			if (inliers > cutoff)
 			{
