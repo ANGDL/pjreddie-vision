@@ -450,15 +450,15 @@ image combine_images(image a, image b, matrix H)
         for(j = 0; j < a.h; ++j){
             for(i = 0; i < a.w; ++i){
                 // TODO: fill in.
-				int nx = dx + i;
-				int ny = dy + j;
+				int nx = i - dx;
+				int ny = j - dy;
 				float v = get_pixel(a, i, j, k);
 				set_pixel(c, nx, ny, k, v);
             }
         }
     }
 
-    // TODO: Paste in image b as well.
+    // DONE: Paste in image b as well.
     // You should loop over some points in the new image (which? all?)
     // and see if their projection from a coordinates to b coordinates falls
     // inside of the bounds of image b. If so, use bilinear interpolation to
