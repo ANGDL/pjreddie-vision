@@ -17,7 +17,7 @@ float get_pixel(image im, int x, int y, int c)
 
 	// get the index
 	int idx = x + im.w * y + im.w * im.h * c;
-	assert(idx < im.w * im.h * im.c);
+	assert(idx < im.w * im.h * im.c && idx >= 0);
     return im.data[idx];
 }
 
@@ -26,7 +26,10 @@ void set_pixel(image im, int x, int y, int c, float v)
     // Done Fill this in
 	// get the index
 	int idx = x + im.w * y + im.w * im.h * c;
-	assert(idx < im.w * im.h * im.c);
+	if (!(idx < im.w * im.h * im.c && idx >= 0)) {
+		printf("%d %d %d\n", x, y, c);
+	}
+	//assert(idx < im.w * im.h * im.c && idx >= 0);
 	im.data[idx] = v;
 }
 
@@ -34,7 +37,7 @@ image copy_image(image im)
 {
     image copy = make_image(im.w, im.h, im.c);
     // Done Fill this in
-	memcpy(copy.data, im.data, im.w * im.h * im.c * sizeof(float));
+	memcpy(copy.data, im.data, (unsigned __int64)im.w * im.h * im.c * sizeof(float));
     return copy;
 }
 
