@@ -28,6 +28,7 @@ void set_pixel(image im, int x, int y, int c, float v)
 	int idx = x + im.w * y + im.w * im.h * c;
 	if (!(idx < im.w * im.h * im.c && idx >= 0)) {
 		printf("%d %d %d\n", x, y, c);
+		return;
 	}
 	//assert(idx < im.w * im.h * im.c && idx >= 0);
 	im.data[idx] = v;

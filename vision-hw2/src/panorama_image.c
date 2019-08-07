@@ -514,8 +514,10 @@ image combine_images(image a, image b, matrix H)
 					// 计算偏移后的坐标
 					int nx = i - dx;
 					int ny = j - dy;
-					if(nx >= 0 && nx < c.w && ny >= 0 && ny < c.h)
+					if (nx >= 0 && nx < c.w && ny >= 0 && ny < c.h && b_pix > 0.001) {
 						set_pixel(c, nx, ny, k, b_pix);
+					}
+
 				}
 			}
 		}
@@ -572,27 +574,31 @@ image panorama_image(image a, image b, float sigma, float thresh, int nms, float
 image cylindrical_project(image im, float f)
 {
     //DONE: project image onto a cylinder
-    image c = copy_image(im);
+    image c = make_image(im.w, im.h, im.c);
+	//image c = copy_image(im);
 	int xc = im.w / 2;
 	int yc = im.h / 2;
 
-	for (int k = 0; k != im.c; ++k) {
-		for (int j = 0; j != im.h; j++)
+	for (int j = 0; j != c.h; j++)
+	{
+		for (int i = 0; i != c.w; ++i)
 		{
-			for (int i = 0; i != im.w; ++i)
-			{
-				float theta = (i - xc) / f;
-				float h = (j - yc) / f;
-				float x = sinf(theta);
-				float y = h;
-				float z = cosf(theta);
-				x = f * x / z + xc;
-				y = f * y / z + yc;
-				float v = get_pixel(im, i, j, k);
-				set_pixel(c, (int)(x), (int)(y), k, v);
+			float theta = (i - xc) / f;
+			float h = (j - yc) / f;
+			float x = sinf(theta);
+			float y = h;
+			float z = cosf(theta);
+			int xn = f * x / z + xc;
+			int yn = f * y / z + yc;
+			for (int k = 0; k != c.c; ++k) {
+				if (xn >= 0 && xn < im.w && yn >= 0 && yn < im.h) {
+					float v = bilinear_interpolate(im, xn, yn, k);
+					set_pixel(c, i, j, k, v);
+				}
 			}
 		}
 	}
 
     return c;
 }
+

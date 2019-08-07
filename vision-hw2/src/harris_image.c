@@ -29,7 +29,7 @@ descriptor describe_index(image im, int i)
     descriptor d;
     d.p.x = i%im.w;
     d.p.y = i/im.w;
-    d.data = calloc(w*w*im.c, sizeof(float));
+    d.data = calloc((unsigned __int64)w*w*im.c, sizeof(float));
     d.n = w*w*im.c;
     int c, dx, dy;
     int count = 0;
@@ -83,7 +83,7 @@ void mark_corners(image im, descriptor *d, int n)
 // returns: single row image of the filter.
 image make_1d_gaussian(float sigma)
 {
-    // TODO: optional, make separable 1d Gaussian.
+    // Done: optional, make separable 1d Gaussian.
 	int size = sigma * 6;
 	while (1)
 	{
@@ -271,13 +271,15 @@ descriptor *harris_corner_detector(image im, float sigma, float thresh, int nms,
     
     *n = count; // <- set *n equal to number of corners in image.
     descriptor *d = calloc(count, sizeof(descriptor));
-    //TODO: fill in array *d with descriptors of corners, use describe_index.
-	count = 0;
-	for (int i = 0; i != Rnms.w * Rnms.h * Rnms.c; ++i) {
-		float v = Rnms.data[i];
-		if (v > thresh) {
-			d[count] = describe_index(im, i);
-			++count;
+    //Done: fill in array *d with descriptors of corners, use describe_index.
+	if (d) {
+		int j = 0;
+		for (int i = 0; i != Rnms.w * Rnms.h * Rnms.c; ++i) {
+			float v = Rnms.data[i];
+			if (v > thresh && j < count) {
+				d[j] = describe_index(im, i);
+				++j;
+			}
 		}
 	}
 
