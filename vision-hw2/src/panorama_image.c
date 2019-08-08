@@ -502,26 +502,42 @@ image combine_images(image a, image b, matrix H)
     // and see if their projection from a coordinates to b coordinates falls
     // inside of the bounds of image b. If so, use bilinear interpolation to
     // estimate the value of b at that projection, then fill in image c.
-	for (k = 0; k < c.c; ++k) {
-		for (j = 0; j < c.h; ++j) {
-			for (i = 0; i < c.w; ++i) {
-				// find the point in b projected using the homography
-				point b_point = project_point(H, make_point((float)i, (float)j));
-				// if projected point in b.w and b.h
-				if (b_point.x >=0 && b_point.x < b.w && b_point.y >= 0 && b_point.y < b.h) {
-					// calculate the pixel
+
+
+	for (j = 0; j < c.h; ++j) {
+		for (i = 0; i < c.w; ++i) {
+			// 计算偏移后的坐标
+			int nx = i - dx;
+			int ny = j - dy;
+			// find the point in b projected using the homography
+			point b_point = project_point(H, make_point((float)i, (float)j));
+			// if projected point in b.w and b.h
+			if (b_point.x > 0 && b_point.x < b.w && b_point.y > 0 && b_point.y < b.h) {
+
+				for (k = 0; k < c.c; ++k) {
+					// calculate the pixel	
 					float b_pix = bilinear_interpolate(b, b_point.x, b_point.y, k);
-					// 计算偏移后的坐标
-					int nx = i - dx;
-					int ny = j - dy;
-					if (nx >= 0 && nx < c.w && ny >= 0 && ny < c.h && b_pix > 0.001) {
+					
+					if (nx >= 0 && nx < c.w && ny >= 0 && ny < c.h && b_pix > 0.0f ) {
+						float bl_pix = bilinear_interpolate(b, b_point.x-1, b_point.y, k);
+						float bt_pix = bilinear_interpolate(b, b_point.x, b_point.y-1, k);
+						float bb_pix = bilinear_interpolate(b, b_point.x + 1, b_point.y, k);
+						if (bl_pix < 0.00001 || bt_pix < 0.00001 || bb_pix < 0.00001) {
+							float cl_pix = get_pixel(c, nx - 1, ny, k);
+							float br_pix = bilinear_interpolate(b, b_point.x + 1, b_point.y, k);
+							//b_pix = ((double)cl_pix + br_pix) / 2.;
+							continue;
+						}
+
 						set_pixel(c, nx, ny, k, b_pix);
 					}
 
 				}
+				// printf("\n");
 			}
 		}
 	}
+
     return c;
 }
 
@@ -592,7 +608,7 @@ image cylindrical_project(image im, float f)
 			int yn = f * y / z + yc;
 			for (int k = 0; k != c.c; ++k) {
 				if (xn >= 0 && xn < im.w && yn >= 0 && yn < im.h) {
-					float v = bilinear_interpolate(im, xn, yn, k);
+					float v = get_pixel(im, xn, yn, k);
 					set_pixel(c, i, j, k, v);
 				}
 			}
