@@ -52,8 +52,7 @@ image convolve_image(image im, image filter, int preserve)
 	int n_filters = filter.c;
 
 	assert(n_filters == im.c || n_filters == 1);
-	
-	int filter_size = filter.w * filter.h;
+
 	for (int k = 0; k != im.c; ++k) {
 		int filter_c = filter.c == 1 ? 0 : k;
 		for (int j = 0; j != im.h; ++j) {
@@ -66,12 +65,11 @@ image convolve_image(image im, image filter, int preserve)
 					}
 				}
 				set_pixel(new_image, i, j, k, v);
-
 			}	
 		}
 	}
 
-	if(preserve != 0 || n_filters == 1)
+	if(preserve != 0)
 		return new_image;
 
 	image avg_img = make_image(new_image.w, new_image.h, 1);
@@ -214,6 +212,10 @@ image sub_image(image a, image b)
 			for (int i = 0; i != a.w; ++i) {
 				float v1 = get_pixel(a, i, j, k);
 				float v2 = get_pixel(b, i, j, k);
+				int idx = i + a.w * j + a.w * a.h * k;
+				if (idx == 40071) {
+					printf("%f,%f\n", v1, v2);
+				}
 				set_pixel(img, i, j, k, v1 - v2);
 			}
 		}
@@ -290,6 +292,9 @@ image *sobel_image(image im)
 
 	image gx = convolve_image(im, gx_filter, 0);
 	image gy = convolve_image(im, gy_filter, 0);
+
+	save_image(gx, "gx");
+	save_image(gy, "gy");
 
 	for (int j = 0; j != im.h; ++j) {
 		for (int i = 0; i != im.w; ++i) {
